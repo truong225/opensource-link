@@ -1,1 +1,22 @@
 https://viblo.asia/p/breaking-a-captcha-by-machine-learning-bWrZneDbKxw
+
+[Tăng tốc cho các thuật toán]
+Khi triển khai một thuật toán Machine Learning, ngoài việc mô hình cho kết quả tốt, một điều nữa chúng ta phải thường quan tâm là tốc độ chạy của chương trình.
+Các mô hình Machine Learning nói chung có hai bước: huấn luyện và kiểm thử. Trong khi việc huấn luyện có thể làm 'offline', tức có thể chạy lâu (như các mô hình Deep Learning chẳng hạn), thì quá trình kiểm thử thường yêu cầu tốc độ cao hơn. Tốc độ kiểm thử cũng chính là tốc độ của mô hình khi thực hiện trên dữ liệu mới. Việc huấn luyện có thể được thực hiện trong một ngày nhưng việc phân loại một bức ảnh thì không thể để trong một ngày được. Hay chatbot không thể vài tiếng sau mới trả lời người dùng được.
+Nói như vậy không có nghĩa là việc quan tâm tới tốc độ trong khi huấn luyện là không quan trọng. Thường thì để ra được một mô hình tốt, các kỹ sư Machine Learning cần phải thực hiện thuật toán tới cả nghìn lần khác nhau để chọn ra các tham số và mô hình phù hợp. Nếu chúng ta không quan tâm tới tốc độ huấn luyện, chất lượng mô hình và độ khả thi của mô hình sẽ bị ảnh hưởng.
+Vậy khi thuật toán quá chậm, chúng ta phải làm gì? Giả sử chúng ta đang phải tự phát triển một thuật toán mới mà các thư viện rất hạn chế. Cách đầu tiên các bạn nghĩ tới sẽ là tìm một máy 'khoẻ' hơn và chạy thuật toán đó. Tuy nhiên, việc này không phải lúc nào cũng khả thi. Thời gian và kinh phí là những thứ không dễ có được. Cách tôi thường phải làm là một trong các cách sau, dựa trên kinh nghiệm làm việc với Matlab và Python (giả sử rằng chúng ta đã google nhưng không tìm được phần nào tương tự):
+1. Xác định những phần chạy chậm nhất trong thuật toán, đặc biệt là những phần không những chạy chậm mà còn phải chạy lại nhiều lần trong nhiều vòng lặp.
+Trong Matlab, việc này có thể được thực hiện bằng 'profile':
+https://www.mathworks.com/help/matlab/ref/profile.html
+Trong Python, việc này cũng có thể được thực hiện bằng 'profile':
+https://docs.python.org/2/library/profile.html
+Profile sẽ chỉ ra thời gian chạy của từng hàm trong chương trình, số lần hàm đó được gọi, tổng thời gian và tỉ lệ thời gian mỗi hàm được thực hiện. Dựa trên dữ liệu này, chúng ta sẽ xác định được phần nào cần phải được tốt ưu, và phần nào không thực sự cần tối ưu.
+2. Khi xác định được những phần chiếm thời gian chạy lớn, chúng ta biết rằng nếu phần đó được tăng tốc, cả chương trình sẽ được tăng tốc. Chúng ta cần xem xét các khả năng có thể để tăng tốc phần này. Có hai hướng có thể nghĩ tới. Một là có thuật toán nào giúp tăng tốc phần này không, nếu phải hy sinh độ chính xác để tốc độ cao hơn thì có khả thi không? Hai là liệu có thể viết lại phần này bằng ngôn ngữ C (hoặc Java, Julia,...) để tăng tốc lên không. Trong khi cách thứ nhất yêu cầu người kỹ sư phải có những kiến thức toán nhất định thì cách thứ hai lại yêu cầu họ phải quen với lập trình C cũng như các ngôn ngữ lập trình ở mức thấp hơn.
+Với cách thứ nhất, việc nắm vững các kiến thức Đại số tuyến tính là quan trọng. Lập trình các thuật toán dưới dạng 'vectorization' (bạn nào từng học các khoá của Andrew Ng thì sẽ đều thấy phần này, tôi cũng sẽ thường xuyên đề cập trong ebook) giúp cho các thuật toán tăng tốc đáng kể nếu tránh được việc sử dụng quá nhiều các vòng for.
+"Nên nhớ, nếu có thể, hãy tránh sử dụng các vòng for! Và nghịch đảo ma trận tốn khá nhiều thời gian."
+Với cách thứ hai, nếu bạn muốn tránh việc lập trình C vì quá lâu không sử dụng, bạn vẫn có các lựa chọn tốt hơn. Đó là cách vẫn viết code ở Matlab hay Python nhưng code này sẽ được chuyển sang code C trước khi chạy lại chương trình. Trong Matlab, bạn có thể tìm hiểu Mex file:
+https://www.mathworks.com/…/matl…/introducing-mex-files.html
+Trong Python, bạn có thể muốn biết Cython: 
+http://cython.org
+Bạn đã khi nào đau đầu về việc tăng tốc cho thuật toán chưa? Nếu có thì bạn đã xử lý nó như thế nào? Hãy chia sẻ ở phần Comment.
+P/S: Post này được thực hiện khi tôi vừa tăng tốc một phần quan trọng trong dự án của mình lên khoảng 200 lần, nhờ vào cả hai cách ở trên: tối ưu toán và lập trình lại bằng Cython.
